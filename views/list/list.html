@@ -1,0 +1,30 @@
+<h3>Mes Catégories</h3>
+<ul class="nav nav-tabs" >
+	<li class="active"><a href="#">All</a></li>
+	<li ng-repeat="category in categories"><a href="#">{{category.name}}</a></li>
+</ul>
+<div class="form-group" style="float:right;">
+	<label for "searchbox">Rechercher </label>
+	<input type="search" ng-model="s" placeholder="Chercher" id="searchbox" style="margin-bottom: 20px;" />
+</div>
+<table class="table">
+	<thead>
+		<tr>
+			<th>#</th>
+			<th><a href="" ng-click="order(title)" style="text-decoration: none;">Titre</a></th>
+			<span class="sortorder" ng-show="predicate === 'title'" ng-class="{reverse:reverse}"></span>
+			<th><a href="" ng-click="order(name)" style="text-decoration: none;">Nom</a></th>
+			<span class="sortorder" ng-show="predicate === 'name'" ng-class="{reverse:reverse}"></span>
+			<th><a href="" ng-click="predicate === 'filterName(item, categories)'" style="text-decoration: none;">Catégorie</a></th>
+			<span ng-show="predicate === 'filterName(item, categories)'" ng-class="{reverse:reverse}"></span>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="item in items | orderBy:predicate:reverse | filter:s as results">
+			<td>{{$index+1}}</td>
+			<td>{{item.title}}</td>
+			<td>{{item.name}}</td>
+			<td>{{filterName(item, categories)}}</td>
+		</tr>
+	</tbody>
+</table>

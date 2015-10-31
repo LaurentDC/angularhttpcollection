@@ -1,0 +1,9 @@
+<h1>Ma collection</h1>
+<div ng-controller="categoryList">
+    <h3>Mes catégories</h3>
+    <div ng-repeat="category in categories">
+        <p decorate-category></p>
+    </div>
+</div>
+
+<!-- open /Applications/Google\ Chrome.app --args --allow-file-access-from-files -->
