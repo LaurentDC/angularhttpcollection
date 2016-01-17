@@ -1,16 +1,32 @@
 'use strict';
 
+var url = 'http://localhost:3000/api';
+
 newapp
-  .controller('categoryIndex', function($scope) {
+  .controller('categoryList', function($scope, $http){
+    $scope.categories = [];
+    $scope.states = {};
+    $scope.activeCategory = 'all';
 
-  })
-  .controller('categoryList', function($scope, categoryProvider) {
-      $scope.categories = categoryProvider.getCategories();
-  })
-  .controller('categoryCreate', function($scope) {
-
-  })
-  .controller('categoryRemove', function($scope) {
-
+    // GET CATEGORIES
+    $http.get(url + '/categories')
+      .success(function(data){
+        $scope.categories = data;
+      })
+      .error(function(data){
+        console.log('error: ' + data);
+      });
+      
+    // POST CATEGORY
+    $scope.createCategory = function(category){
+      category['catId'] = $scope.categories.length + 1;
+      $http.post(url + '/categories', category)
+        .success(function(data){
+          $scope.categories = data;
+        })
+        .error(function(data){
+          console.log('error: ' + data);
+        });
+    };
   })
 ;

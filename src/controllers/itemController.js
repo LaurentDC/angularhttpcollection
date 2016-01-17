@@ -1,37 +1,71 @@
 'use strict';
 
-newapp
-  .controller('itemIndex', function($scope) {
+var url = 'http://localhost:3000/api';
 
-  })
-  .controller('itemCreate', function($scope, categoryProvider, itemProvider) {
-      $scope.categories = categoryProvider.getCategories();
-      $scope.items = itemProvider.getItems();
-      $scope.createItem = function(item) {
-          $scope.items = itemProvider.create(item);
+newapp
+  .controller('itemList', function($rootScope, $scope, $http) {
+      $scope.categories = [];
+      $scope.editorEnabled = false;
+      $scope.checked = false;
+      $scope.editDisabled = true;
+      $scope.currentPage = 0;
+      $scope.maxPage = 10;
+      $scope.filters = {};
+      $scope.items = [];
+
+      // GET ITEMS
+      $http.get(url + '/items')
+        .success(function(data){
+          $scope.items = data;
+        })
+        .error(function(data){
+          console.log('error: ' + data);
+        });
+      // GET CATEGORIES
+      $http.get(url + '/categories')
+        .success(function(data){
+          $scope.categories = data;
+          console.log(data);
+        })
+        .error(function(data){
+          console.log('error: ' + data);
+        });
+      $scope.applyFilters = function(id) {
+          $scope.filters = {category_id: id};
       }
-  })
-  .controller('itemList', function($scope, itemProvider, categoryProvider) {
-      $scope.items = itemProvider.getItems();
-      $scope.categories = categoryProvider.getCategories();
-      $scope.filterName = function(item, categories) {
-        for (var i = 0; i < categories.length; i++) {
-          if (item.category_id === categories[i].id) {
-            return categories[i].name;
-          };
-        };
+      $scope.numberOfPages = function(){
+        return Math.ceil($scope.items.length / $scope.maxPage);
+      }
+      // POST ITEM
+      $scope.createItem = function(item){
+        item['itemId'] = $scope.items.length + 1;
+        $http.post(url + '/items', item)
+          .success(function(data){
+            $scope.items = data;
+          })
+          .error(function(data){
+            console.log('error: ' + data);
+          });
       };
-      $scope.predicate = 'title';
-      $scope.reverse = true;
-      $scope.order = function(predicate) {
-        $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
-        $scope.predicate = predicate;
+      // PUT ITEM
+      $scope.editItem = function(item) {
+        $http.put(url + '/items/' + item._id, item)
+          .success(function(data){
+            $scope.items = data;
+          })
+          .error(function(data){
+            console.log('error: ' + data);
+          });
       };
-  })
-  .controller('itemRemove', function($scope, itemProvider) {
-      $scope.items = itemProvider.getItems();
+      // DELETE ITEM
       $scope.removeItem = function(item) {
-          $scope.items = itemProvider.remove(item);
-      }
+        $http.delete(url + '/items/' + item._id, item)
+          .success(function(data){
+            $scope.items = data;
+          })
+          .error(function(data){
+            console.log('error: ' + data);
+          });
+      };
   })
 ;
