@@ -12,6 +12,7 @@ newapp
     $http.get(url + '/categories')
       .success(function(data){
         $scope.categories = data;
+        console.log('in getCategories from categoryList');
       })
       .error(function(data){
         console.log('error: ' + data);
